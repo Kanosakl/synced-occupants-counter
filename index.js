@@ -1,4 +1,4 @@
-require('dotenv-safe').config()
+require('dotenv').config()
 const {Server:WebSocketServer} = require('ws')
 const http = require('http')
 const express = require('express');
