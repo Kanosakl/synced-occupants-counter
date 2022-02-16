@@ -1,6 +1,7 @@
 let myWebSocket
 
 window.addEventListener('beforeunload', async ()=> {
+    myWebSocket.removeEventListener('close',alertWebsocketClosed)
     await myWebSocket.close()
     console.log('Web socket closed')
 })
@@ -33,10 +34,13 @@ window.addEventListener('load', ()=> {
 
     });
 
-    myWebSocket.addEventListener('close', (event) => {
-        alert('Disconnected from server! Refresh page to reconnect to server.')
-    })
+    myWebSocket.addEventListener('close', alertWebsocketClosed)
 })
+
+function alertWebsocketClosed() {
+    document.querySelector('span.totalAttendees').textContent = "N/A"
+    alert('Disconnected from server! Refresh page to reconnect to server.')
+}
 
 function incrementOccupant(){
     fetch('/increment')
