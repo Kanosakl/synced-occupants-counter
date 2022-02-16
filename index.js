@@ -14,12 +14,12 @@ app.use(express.json())
 app.get('/increment', (req, res) =>{
     totalAttendees++
     broadcastOccupantsChanges(1)
-    res.send(200)
+    res.sendStatus(200)
 })
 
 app.get('/decrement', (req,res)=> {
     if(occupants > 0) broadcastOccupantsChanges(-1)
-    res.send(200)
+    res.sendStatus(200)
 })
 
 app.post('/set', (req, res) => {
@@ -33,7 +33,7 @@ app.post('/set', (req, res) => {
 
     setOccupant(setOccupants)
 
-    res.status(200)
+    res.sendStatus(200)
 })
 
 
