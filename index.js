@@ -24,10 +24,12 @@ const getNowISODateTime = ()=> new Date().toISOString();
         console.log(`${getNowISODateTime()} Found event: ${process.env.EVENT_NAME}, occupants: ${occupants}, totalAttendees: ${totalAttendees}`)
 
         const updateDBOccupants = async () => {
-            myEvent.occupants = occupants
-            myEvent.totalAttendees = totalAttendees
-            await myEvent.save()
-            console.log(`${getNowISODateTime()} DB update - occupants: ${myEvent.occupants}, totalAttendees: ${myEvent.totalAttendees}`)
+            const newValues = {
+                occupants,
+                totalAttendees
+            }
+            await Events.findOneAndUpdate({name: process.env.EVENT_NAME}, {$set:newValues})
+            console.log(`${getNowISODateTime()} DB update - occupants: ${newValues.occupants}, totalAttendees: ${newValues.totalAttendees}`)
         }
         const updateDBInterval = setInterval(updateDBOccupants,process.env.UPDATE_INTERVAL)
 
