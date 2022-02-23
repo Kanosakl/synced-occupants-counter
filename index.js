@@ -50,7 +50,6 @@ const getNowISODateTime = ()=> new Date().toISOString();
         process.on('beforeExit', disconnectDB)
         process.on('SIGINT', disconnectDB)
         process.on('SIGTERM', disconnectDB)
-        process.on('SIGKILL', disconnectDB)
         process.on('uncaughtException', disconnectDB)
     }
 
