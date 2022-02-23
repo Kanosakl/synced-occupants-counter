@@ -23,6 +23,7 @@ const getNowISODateTime = ()=> new Date().toISOString();
         totalAttendees = myEvent.totalAttendees
         console.log(`${getNowISODateTime()} Found event: ${process.env.EVENT_NAME}, occupants: ${occupants}, totalAttendees: ${totalAttendees}`)
 
+        console.log('1')
         const updateDBOccupants = async () => {
             const newValues = {
                 occupants,
@@ -31,9 +32,12 @@ const getNowISODateTime = ()=> new Date().toISOString();
             await Events.findOneAndUpdate({name: process.env.EVENT_NAME}, {$set:newValues})
             console.log(`${getNowISODateTime()} DB update - occupants: ${newValues.occupants}, totalAttendees: ${newValues.totalAttendees}`)
         }
+
+        console.log('2')
         const updateDBInterval = setInterval(updateDBOccupants,process.env.UPDATE_INTERVAL)
 
-        const disconnectDB = async () => {
+        const disconnectDB = async (code) => {
+            console.log(`${getNowISODateTime} exitCode: ${code}`)
             console.log(`${getNowISODateTime()} Server shutdown initiated`)
 
             clearInterval(updateDBInterval)
@@ -46,14 +50,20 @@ const getNowISODateTime = ()=> new Date().toISOString();
             console.log(`${getNowISODateTime()} DB connection closed`)
             process.exit()
         } 
+        console.log('3')
         
         process.on('beforeExit', disconnectDB)
+        console.log('3.1')
         process.on('SIGINT', disconnectDB)
+        console.log('3.2')
         process.on('SIGTERM', disconnectDB)
-        process.on('SIGKILL', disconnectDB)
-        process.on('uncaughtException', disconnectDB)
+        console.log('3.3')
+        // process.on('SIGKILL', disconnectDB)
+        // console.log('3.4')
+        // process.on('uncaughtException', disconnectDB)
+        // console.log('3.5')
     }
-
+    console.log('4')
 
     app.use(express.json())
 
@@ -85,6 +95,7 @@ const getNowISODateTime = ()=> new Date().toISOString();
     
     app.use(express.static('public'))
     
+    console.log('5')
     
     const server = http.createServer(app)
     const wss = new WebSocketServer({ server });
@@ -100,6 +111,7 @@ const getNowISODateTime = ()=> new Date().toISOString();
         req.socket.remoteAddress}`)
         ws.send(JSON.stringify({eventName: 'initialize', occupants, totalAttendees}))
     })
+    console.log('6')
     
     wss.on('close', (ws, req)=> {
         console.log(`${getNowISODateTime()} WS DISconnected - ${(req.headers['x-forwarded-for'] || '').split(',').pop().trim() ||
