@@ -1,7 +1,8 @@
 let myWebSocket
-
+let pingWSInterval
 window.addEventListener('beforeunload', async ()=> {
     myWebSocket.removeEventListener('close',alertWebsocketClosed)
+    clearInterval(pingWSInterval)
     await myWebSocket.close()
     console.log('Web socket closed')
 })
@@ -33,12 +34,13 @@ window.addEventListener('load', ()=> {
     }
 
     });
-
+    pingWSInterval = setInterval(()=> {myWebSocket?.send('ping')}, 30000)
     myWebSocket.addEventListener('close', alertWebsocketClosed)
 })
 
 function alertWebsocketClosed() {
     document.querySelector('span.totalAttendees').textContent = "N/A"
+    clearInterval(pingWSInterval)
     alert('Disconnected from server! Refresh page to reconnect to server.')
 }
 
